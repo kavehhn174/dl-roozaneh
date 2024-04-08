@@ -1,0 +1,62 @@
+<div class="row m-5" dir="rtl">
+    <h4 class="my-4"> لیست کیفیت ها </h4>
+
+
+    <div class="table-bg col-9" dir="rtl">
+        <table class="table table-light table-hover">
+            <thead>
+            <tr>
+                <th scope="col">#</th>
+                <th scope="col">نام کیفیت</th>
+                <th scope="col"></th>
+            </tr>
+            </thead>
+            <tbody>
+            <% qualities.forEach ( (item, idx) => { %>
+                <tr>
+                    <td><%= idx + 1 %></td>
+                    <td><%= item.name %></td>
+                    <td>
+                        <div class="d-flex justify-content-around">
+                            <button class="btn btn-primary btn-sm">ویرایش</button>
+                            <button class="btn btn-danger btn-sm">حذف</button
+                        </div>
+                    </td>
+                </tr>
+            <% }) %>
+            </tbody>
+        </table>
+    </div>
+
+    <div class="col-3" dir="rtl">
+        <input type="text" class="form-control" placeholder="نام کیفیت" id="qualityName">
+        <div class="d-flex justify-content-center mt-3">
+            <button type="button" class="btn btn-primary btn-sm" onclick="createNewQuality()">ذخیره</button>
+        </div>
+    </div>
+
+</div>
+
+<script src="https://unpkg.com/axios@1.6.7/dist/axios.min.js"></script>
+<script>
+    async function createNewQuality() {
+        const name = document.getElementById('qualityName').value
+
+        let config = {
+            method: 'POST',
+            url: "/api/quality/",
+            withCredentials: true,
+            data: {
+                name
+            }
+        }
+        try {
+            const response = await axios(config);
+            if (response) {
+                window.location.replace("/admin/quality-list/");
+            }
+        } catch (error) {
+            console.error(error);
+        }
+    }
+</script>

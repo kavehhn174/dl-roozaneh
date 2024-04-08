@@ -24,10 +24,6 @@ module.exports = (sequelize, DataTypes) => {
             type: DataTypes.STRING,
             allowNull: false,
         },
-        countries: {
-            type: DataTypes.STRING,
-            allowNull: false,
-        },
         hasDub: {
             type: DataTypes.BOOLEAN,
             allowNull: false,

@@ -4,6 +4,8 @@ const cors = require('cors');
 const bodyParser = require('body-parser');
 const cookieParser = require('cookie-parser');
 const { sequelize } = require("./postgres/postgres");
+const qualityRoutes = require('./router/qualityRouter')
+const adminRoutes = require('./router/adminRouter')
 
 const app = express();
 
@@ -25,8 +27,12 @@ app.use(
 app.use(cookieParser());
 app.use(express.json());
 app.set('view engine', 'ejs');
-app.use(express.static('public'));
+app.use(express.static('views/public'));
 const port = process.env.PORT || 3000;
+
+
+app.use('/api/quality', qualityRoutes)
+app.use('/admin', adminRoutes)
 
 app.use(function (req, res) {
     res.status(404).send('<h1>404 Not Found</h1>');

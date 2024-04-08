@@ -1,0 +1,68 @@
+<link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/toastify-js/src/toastify.min.css">
+<script type="text/javascript" src="https://cdn.jsdelivr.net/npm/toastify-js"></script>
+
+<script>
+    const savedToast = Toastify({
+        text: "تغییرات با موفقیت ثبت شد",
+        duration: 3000,
+        close: true,
+        gravity: "bottom", // `top` or `bottom`
+        position: "center", // `left`, `center` or `right`
+        stopOnFocus: true, // Prevents dismissing of toast on hover
+        style: {
+            background: "linear-gradient(to right, #00b09b, #96c93d)",
+        },
+        onClick: function(){} // Callback after click
+    });
+
+    const failedToast = Toastify({
+        text: "ثبت تغییرات، ناموفق",
+        duration: 3000,
+        close: true,
+        gravity: "bottom", // `top` or `bottom`
+        position: "center", // `left`, `center` or `right`
+        stopOnFocus: true, // Prevents dismissing of toast on hover
+        style: {
+            background: "linear-gradient(to right, #b00075, #c93d3f)",
+        },
+        onClick: function(){} // Callback after click
+    });
+
+    const yellowToast = (text) => {
+        const background = "linear-gradient(to right, #99b000, #c93d3f)";
+        Toastify({
+            text: text,
+            duration: 3000,
+            close: true,
+            gravity: "bottom", // `top` or `bottom`
+            position: "center", // `left`, `center` or `right`
+            stopOnFocus: true, // Prevents dismissing of toast on hover
+            style: {
+                background: background,
+            },
+            onClick: function(){} // Callback after click
+        }).showToast();
+    }
+
+    const sendToast = (text, isSuccess) => {
+        let background = '';
+        if (isSuccess === true) {
+            background = "linear-gradient(to right, #00b09b, #96c93d)";
+        } else {
+            background = "linear-gradient(to right, #b00075, #c93d3f)";
+        }
+        Toastify({
+            text: text,
+            duration: 3000,
+            close: true,
+            gravity: "bottom", // `top` or `bottom`
+            position: "center", // `left`, `center` or `right`
+            stopOnFocus: true, // Prevents dismissing of toast on hover
+            style: {
+                background: background,
+            },
+            onClick: function(){} // Callback after click
+        }).showToast();
+    }
+
+</script>

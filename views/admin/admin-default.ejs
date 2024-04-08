@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<style>
+    body {
+        font-family: Vazirmatn, sans-serif!important;
+    }
+</style>
+<html lang="en" dir="ltr">
+
+
+<%- include(`./partials/head`) %>
+
+<body>
+<div class="container-fluid g-0">
+    <div class="">
+        <%- include(`./partials/navbar`) %>
+    </div>
+
+    <div class="content">
+
+        <div class="row g-0" style="height: 100vh">
+
+            <div class="main-column col-xl-10">
+                <%- include(`./${template}`) %>
+            </div>
+
+
+            <div class="right-menu col-xl-2" >
+                <%- include(`./partials/right-menu`) %>
+            </div>
+
+        </div>
+
+    </div>
+</div>
+</body>
+
+<%- include(`./partials/scripts`) %>
+</html>
