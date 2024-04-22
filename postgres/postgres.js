@@ -38,9 +38,13 @@ db.comment.belongsTo(db.work)
 db.work.hasMany(db.season, {foreignKey: 'work_id'})
 db.season.belongsTo(db.work)
 
-// One to Many ( Season - Quality )
+// One to Many ( Season - Link )
 db.season.hasMany(db.link, {foreignKey: 'season_id'})
 db.link.belongsTo(db.season)
+
+// One to One ( Season - Quality )
+db.quality.hasMany(db.season, {foreignKey: 'quality_id'})
+db.season.belongsTo(db.quality)
 
 db.sequelize.sync({ force: false }).then(() => {
     console.log('re-sync done!');

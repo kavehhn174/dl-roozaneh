@@ -4,7 +4,7 @@ const Link = db.link;
 const catchAsync = require('./../utils/catchAsync');
 const AppError = require("../utils/appError");
 
-exports.createTag = catchAsync(async (req, res, next) => {
+exports.createLink = catchAsync(async (req, res, next) => {
     const link = await Link.create(req.body);
 
     res.status(201).json({
@@ -13,7 +13,7 @@ exports.createTag = catchAsync(async (req, res, next) => {
     });
 });
 
-exports.getAllTags = catchAsync(async (req, res, next) => {
+exports.getAllLinks = catchAsync(async (req, res, next) => {
     const links = await Link.findAll();
 
     res.status(201).json({
@@ -22,7 +22,7 @@ exports.getAllTags = catchAsync(async (req, res, next) => {
     });
 });
 
-exports.getTag = catchAsync(async (req, res, next) => {
+exports.getLink = catchAsync(async (req, res, next) => {
     const link = await Link.findOne({where: {id: req.params.id}});
 
     if (!link) {
@@ -38,7 +38,7 @@ exports.getTag = catchAsync(async (req, res, next) => {
 });
 
 
-exports.deleteTag = catchAsync(async (req, res, next) => {
+exports.deleteLink = catchAsync(async (req, res, next) => {
     const link = await Link.destroy({
         where: {
             id: req.params.id
@@ -50,7 +50,7 @@ exports.deleteTag = catchAsync(async (req, res, next) => {
     });
 });
 
-exports.updateTag = catchAsync(async (req, res, next) => {
+exports.updateLink = catchAsync(async (req, res, next) => {
     const link = await Link.update(req.body, {
         where: {
             id: req.params.id

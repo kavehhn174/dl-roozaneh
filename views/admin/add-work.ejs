@@ -75,4 +75,50 @@
         </div>
     </div>
 
+    <div x-data="{ qualities: [], qualitiesStatus: [] }">
+        <div class="d-flex">
+            <select id="qualitySelector" class="form-select w-25">
+                <% for (let item of qualities) { %>
+                    <option value="<%= item.name %>"><%= item.name %></option>
+                <% } %>
+            </select>
+            <button class="btn btn-info mx-3" @click="qualities.push({id: document.getElementById('qualitySelector').value}); qualitiesStatus.push(false); console.log(qualitiesStatus);"> افزودن کیفیت </button>
+            <button class="btn btn-warning mx-3" @click="if (qualities.length > 0) qualities.pop()"> حذف کیفیت </button>
+        </div>
+
+        <div class="my-2">
+            <template x-for="(i, index) in qualities">
+                <button @click="qualitiesStatus.fill(false, 0, qualitiesStatus.length); qualitiesStatus[index] = true; console.log(qualitiesStatus)" class="btn btn-secondary ms-3" type="button" x-text="' کیفیت ' + (i.id)">  </button>
+            </template>
+        </div>
+
+        <template x-for="(k, index) in qualities">
+            <div :class="'quality-' + k.id" x-data="{ tabsCount: 0, tabsStatus: [] }" x-show="qualitiesStatus[index]">
+                <button class="btn btn-primary" type="button" @click="tabsCount++; tabsStatus.push(false); console.log(tabsStatus)"> افزودن فصل </button>
+                <button class="btn btn-danger" type="button" @click="if (tabsCount > 0)  tabsCount--; tabsStatus.pop(); console.log(tabsStatus)"> حذف فصل </button>
+
+                <div class="d-flex my-3" style="max-width: 400px; overflow-x: auto">
+                    <template x-for="i in tabsCount" x-transition>
+                        <button @click="tabsStatus.fill(false, 0, tabsStatus.length); tabsStatus[i] = true" class="btn btn-secondary ms-3" type="button" x-text="'فصل' + (i)">  </button>
+                    </template>
+                </div>
+                <template x-for="i in tabsCount">
+                    <div x-show="tabsStatus[i]" x-transition x-data="{ episodes: 0 }">
+                        <button class="btn btn-primary" @click="episodes++"> افزودن قسمت </button>
+                        <button class="btn btn-danger" @click="if (episodes > 0)  episodes--;"> حذف قسمت </button>
+                        <template x-for="j in episodes">
+                            <div class="w-50 my-3">
+                                <input :class="'form-control ' + 'season-' + i + ' quality-' + k.id" type="text" :placeholder="' قسمت ' + j">
+                            </div>
+                        </template>
+                    </div>
+                </template>
+            </div>
+        </template>
+    </div>
+
+
+
+
+
 </div>
