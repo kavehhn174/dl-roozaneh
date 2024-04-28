@@ -4,14 +4,17 @@ const authMiddleware = require('./../middlewares/auth');
 
 const router = new express.Router();
 
-router.use(authMiddleware.protect);
+
 
 router
     .route('/')
     .get(
         qualityController.getAllLinks
     )
-    .post(
+
+router.use(authMiddleware.protect);
+
+router.route('/').post(
         qualityController.createLink
     );
 

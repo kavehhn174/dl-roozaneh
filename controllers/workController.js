@@ -14,7 +14,24 @@ exports.createWork = catchAsync(async (req, res, next) => {
 });
 
 exports.getAllWorks = catchAsync(async (req, res, next) => {
-    const works = await Work.findAll();
+    console.log('Get All Works')
+    const works = await db.work.findAll({
+        include: [
+            {
+                model: db.season,
+                include: [
+                    {
+                        model: db.quality,
+                        include: [
+                            {
+                                model: db.link,
+                            },
+                        ]
+                    },
+                ],
+            }
+        ],
+    });
 
     res.status(201).json({
         status: 'success',

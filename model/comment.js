@@ -4,10 +4,6 @@ module.exports = (sequelize, DataTypes) => {
             type: DataTypes.STRING,
             allowNull: false,
         },
-        work_id: {
-            type: DataTypes.INTEGER,
-            allowNull: false,
-        },
         email: {
             type: DataTypes.STRING,
             allowNull: false,
@@ -16,5 +12,10 @@ module.exports = (sequelize, DataTypes) => {
             type: DataTypes.STRING,
             allowNull: false,
         },
+        isVerified: {
+            type: DataTypes.BOOLEAN,
+            allowNull: false,
+            defaultValue: false
+        }
     });
 };

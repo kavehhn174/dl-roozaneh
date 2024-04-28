@@ -5,6 +5,8 @@ const bodyParser = require('body-parser');
 const cookieParser = require('cookie-parser');
 const { sequelize } = require("./postgres/postgres");
 const qualityRoutes = require('./router/qualityRouter')
+const workRoutes = require('./router/workRouter')
+const linkRoutes = require('./router/linkRouter')
 const adminRoutes = require('./router/adminRouter')
 
 const app = express();
@@ -30,7 +32,8 @@ app.set('view engine', 'ejs');
 app.use(express.static('views/public'));
 const port = process.env.PORT || 3000;
 
-
+app.use('/api/link', linkRoutes)
+app.use('/api/work', workRoutes)
 app.use('/api/quality', qualityRoutes)
 app.use('/admin', adminRoutes)
 

@@ -12,9 +12,5 @@ module.exports = (sequelize, DataTypes) => {
             type: DataTypes.STRING,
             allowNull: false,
         },
-        season_id: {
-            type: DataTypes.INTEGER,
-            allowNull: false,
-        },
     });
 };

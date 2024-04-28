@@ -11,7 +11,7 @@ router.get('/', async function (req, res) {
 });
 
 router.get('/add-work', async function (req, res) {
-    const qualities = await Quality.findAll({})
+    const qualities = [{ id: 1, name: '720p'}, { id: 2, name: '1080p'}, { id: 1, name: '4K'}]
     try {
         res.render('admin/admin-default', {template: 'add-work', qualities});
     }  catch (err) {
@@ -28,7 +28,7 @@ router.get('/work-list', async function (req, res) {
 });
 
 router.get('/quality-list', async function (req, res) {
-    const qualities = await Quality.findAll({})
+    const qualities = ['720p', '1080p', '4K']
     try {
         res.render('admin/admin-default', {template: 'quality-list', qualities});
     }  catch (err) {
@@ -52,10 +52,12 @@ router.get('/works', async (req, res) => {
                     model: db.season,
                     include: [
                         {
-                            model: db.link,
-                        },
-                        {
                             model: db.quality,
+                            include: [
+                                {
+                                    model: db.link,
+                                },
+                            ]
                         },
                     ],
                 },
@@ -81,6 +83,10 @@ const mockWorks = [
         hasSoftSub: false,
         duration: '142 min',
         year: 1994,
+        seasonsCount: 1,
+        episodePerSeason: 1,
+        image: 'a'
+
     },
     {
         name: 'Game of Thrones',
@@ -90,25 +96,13 @@ const mockWorks = [
         hasDub: true,
         hasSub: true,
         hasSoftSub: false,
-        seasonsCount: 8,
+        seasonsCount: 5,
         score: 9.0,
         episodes: 73,
         duration: '60 min',
         year: 2011,
-    },
-    {
-        name: 'Breaking Bad',
-        workType: 'Series',
-        actors: 'Bryan Cranston, Aaron Paul, Anna Gunn',
-        director: 'Vince Gilligan',
-        hasDub: true,
-        hasSub: true,
-        hasSoftSub: false,
-        seasonsCount: 5,
-        score: 9.0,
-        episodes: 62,
-        duration: '49 min',
-        year: 2008,
+        episodePerSeason: 10,
+        image: 'b'
     },
     {
         name: 'Friends',
@@ -118,102 +112,226 @@ const mockWorks = [
         hasDub: true,
         hasSub: true,
         hasSoftSub: false,
-        seasonsCount: 10,
+        seasonsCount: 3,
         score: 9.0,
         episodes: 236,
         duration: '22 min',
         year: 1994,
+        episodePerSeason: 23,
+        image: 'c'
     },
 ];
 
 const mockQualities = ['720p', '1080p', '4K'];
 
-const mockLinks = [
-    {
-        name: 'The Shawshank Redemption',
-        episode_no: 1,
-        url: 'https://example.com/shawshank-redemption',
-        season_id: 1,
-    },
-    {
-        name: 'Game of Thrones - Season 1 Episode 1',
-        episode_no: 1,
-        url: 'https://example.com/game-of-thrones/season1/episode1',
-        season_id: 1,
-    },
-    {
-        name: 'Breaking Bad - Season 1 Episode 1',
-        episode_no: 1,
-        url: 'https://example.com/breaking-bad/season1/episode1',
-        season_id: 1,
-    },
-    {
-        name: 'Breaking Bad - Season 2 Episode 1',
-        episode_no: 1,
-        url: 'https://example.com/breaking-bad/season2/episode1',
-        season_id: 2,
-    },
-    {
-        name: 'Breaking Bad - Season 3 Episode 1',
-        episode_no: 1,
-        url: 'https://example.com/breaking-bad/season3/episode1',
-        season_id: 3,
-    },
-    {
-        name: 'Friends - Season 1 Episode 1',
-        episode_no: 1,
-        url: 'https://example.com/friends/season1/episode1',
-        season_id: 1,
-    },
-    {
-        name: 'Friends - Season 2 Episode 1',
-        episode_no: 1,
-        url: 'https://example.com/friends/season2/episode1',
-        season_id: 2,
-    },
-    {
-        name: 'Friends - Season 3 Episode 1',
-        episode_no: 1,
-        url: 'https://example.com/friends/season3/episode1',
-        season_id: 3,
-    },
-    // Add more mock links as needed
-];
-router.get('/seed', async function (req,res) {
+router.get('/seed-v3', async function (req,res,next) {
+    await db.sequelize.sync({ force: true });
+    console.log('Cleared DB')
     try {
-        await db.sequelize.sync({ force: true });
 
-        // Insert mock qualities
-        const qualities = await db.quality.bulkCreate(
-            mockQualities.map((name) => ({ name }))
-        );
-
-        // Insert mock works
-        const works = await db.work.bulkCreate(mockWorks);
-
-        // Insert mock seasons and links
-        for (const work of works) {
-            const seasons = [];
-            for (let i = 1; i <= (work.workType === 'Movie' ? 1 : work.seasonsCount); i++) {
+        for (let i = 0; i < mockWorks.length; i++) {
+            console.log(`i: ${i}`)
+            const work = await db.work.create({
+                name: mockWorks[i].name,
+                workType: mockWorks[i].workType,
+                actors: mockWorks[i].actors,
+                director: mockWorks[i].director,
+                hasDub: mockWorks[i].hasDub,
+                hasSub: mockWorks[i].hasSub,
+                hasSoftSub: mockWorks[i].hasSoftSub,
+                duration: mockWorks[i].duration,
+                year: mockWorks[i].year,
+                image: mockWorks[i].image
+            });
+            for (let j = 0; j < mockWorks[i].seasonsCount; j++) {
                 const season = await db.season.create({
-                    name: work.workType === 'Movie' ? 'Season 1' : `Season ${i}`,
-                    work_id: work.id,
-                    quality_id: qualities[0].id,
+                    name: 'Season ' + (j + 1),
+                    workId: work.dataValues.id
                 });
-                seasons.push(season);
 
-                // Insert mock links for this season
-                const links = mockLinks.filter(
-                    (link) => link.name.includes(work.name) && link.season_id === season.id
-                );
-                await db.link.bulkCreate(links);
+                for (let k = 0; k < mockQualities.length; k++) {
+                    const quality = await db.quality.create({
+                        name: mockQualities[k],
+                        seasonId: season.dataValues.id
+                    });
+
+                    for (let l = 0; l < mockWorks[i].episodePerSeason; l++) {
+                        await db.link.create({
+                            name: mockWorks[i].name.replaceAll(' ', '') + mockQualities[k] + 'S' + (j + 1) + 'E' + (l + 1),
+                            qualityId: quality.dataValues.id,
+                            episode_no: l + 1,
+                            url: 'https://s1.dlrozaneh/' + mockWorks[i].name.replaceAll(' ', '') + mockQualities[k] + 'S' + (j + 1) + 'E' + (l + 1) + '.mkv'
+                        });
+                    }
+                }
+                console.log('After ', j)
             }
         }
 
-        console.log('Data seeded successfully!');
+        return res.send('Seeding completed successfully!')
     } catch (error) {
         console.error('Error seeding data:', error);
+        return res.send(error)
     }
 
+})
+
+router.get('/seed-v2', async function (req,res,next) {
+    await db.sequelize.sync({ force: true });
+    console.log('Cleared DB')
+
+    try {
+
+        // Create quality records
+        const quality1 = await db.quality.create({ name: '720p' });
+        const quality2 = await db.quality.create({ name: '1080p' });
+
+        // Create movie records
+        const movie1 = await db.work.create({
+            name: 'The Shawshank Redemption',
+            workType: 'Movie',
+            actors: 'Tim Robbins, Morgan Freeman',
+            director: 'Frank Darabont',
+            hasDub: true,
+            hasSub: true,
+            hasSoftSub: false,
+            duration: '2h 22m',
+            year: 1994,
+        });
+
+        const movie2 = await db.work.create({
+            name: 'The Godfather',
+            workType: 'Movie',
+            actors: 'Marlon Brando, Al Pacino',
+            director: 'Francis Ford Coppola',
+            hasDub: true,
+            hasSub: true,
+            hasSoftSub: false,
+            duration: '2h 55m',
+            year: 1972,
+        });
+
+        // Create season records for movies (1 season, 1 episode)
+        const movieSeason1 = await db.season.create({
+            name: 'Season 1',
+            workId: movie1.id,
+            qualityId: quality1.id,
+        });
+
+        const movieSeason2 = await db.season.create({
+            name: 'Season 1',
+            workId: movie2.id,
+            qualityId: quality2.id,
+        });
+
+        // Create link records for movie seasons
+        await db.link.create({
+            name: 'The Shawshank Redemption',
+            episode_no: 1,
+            url: 'https://example.com/shawshank-redemption',
+            seasonId: movieSeason1.id,
+        });
+
+        await db.link.create({
+            name: 'The Godfather',
+            episode_no: 1,
+            url: 'https://example.com/the-godfather',
+            seasonId: movieSeason2.id,
+        });
+
+        // Create series records
+        const series1 = await db.work.create({
+            name: 'Game of Thrones',
+            workType: 'Series',
+            actors: 'Emilia Clarke, Kit Harington',
+            director: 'David Benioff, D.B. Weiss',
+            hasDub: true,
+            hasSub: true,
+            hasSoftSub: false,
+            seasonsCount: 8,
+            duration: '1h',
+            year: 2011,
+        });
+
+        const series2 = await db.work.create({
+            name: 'Breaking Bad',
+            workType: 'Series',
+            actors: 'Bryan Cranston, Aaron Paul',
+            director: 'Vince Gilligan',
+            hasDub: true,
+            hasSub: true,
+            hasSoftSub: false,
+            seasonsCount: 5,
+            duration: '49m',
+            year: 2008,
+        });
+
+        // Create season records for series
+        const seriesSeason1 = await db.season.create({
+            name: 'Season 1',
+            workId: series1.id,
+            qualityId: quality1.id,
+        });
+
+        const seriesSeason2 = await db.season.create({
+            name: 'Season 2',
+            workId: series1.id,
+            qualityId: quality1.id,
+        });
+
+        const seriesSeason3 = await db.season.create({
+            name: 'Season 1',
+            workId: series2.id,
+            qualityId: quality2.id,
+        });
+
+        const seriesSeason4 = await db.season.create({
+            name: 'Season 2',
+            workId: series2.id,
+            qualityId: quality2.id,
+        });
+
+        // Create link records for series seasons
+        for (let i = 1; i <= 10; i++) {
+            await db.link.create({
+                name: `Episode ${i}`,
+                episode_no: i,
+                url: `https://example.com/game-of-thrones/season-1/episode-${i}`,
+                seasonId: seriesSeason1.id,
+            });
+        }
+
+        for (let i = 1; i <= 10; i++) {
+            await db.link.create({
+                name: `Episode ${i}`,
+                episode_no: i,
+                url: `https://example.com/game-of-thrones/season-2/episode-${i}`,
+                seasonId: seriesSeason2.id,
+            });
+        }
+
+        for (let i = 1; i <= 7; i++) {
+            await db.link.create({
+                name: `Episode ${i}`,
+                episode_no: i,
+                url: `https://example.com/breaking-bad/season-1/episode-${i}`,
+                seasonId: seriesSeason3.id,
+            });
+        }
+
+        for (let i = 1; i <= 13; i++) {
+            await db.link.create({
+                name: `Episode ${i}`,
+                episode_no: i,
+                url: `https://example.com/breaking-bad/season-2/episode-${i}`,
+                seasonId: seriesSeason4.id,
+            });
+        }
+        console.log('Seeding completed !')
+        return res.send('Seeding completed successfully!')
+    } catch (error) {
+        console.error('Error seeding data:', error);
+        return res.send(error)
+    }
 })
 module.exports = router;

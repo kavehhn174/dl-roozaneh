@@ -31,20 +31,22 @@ db.work.belongsToMany(db.country, {through: 'workCountry'})
 db.country.belongsToMany(db.work, {through: 'workCountry'})
 
 // One to Many ( Work - Comment )
-db.work.hasMany(db.comment, { foreignKey: 'work_id'})
+db.work.hasMany(db.comment)
 db.comment.belongsTo(db.work)
 
 // One to Many ( Work - Season )
-db.work.hasMany(db.season, {foreignKey: 'work_id'})
+db.work.hasMany(db.season)
 db.season.belongsTo(db.work)
 
-// One to Many ( Season - Link )
-db.season.hasMany(db.link, {foreignKey: 'season_id'})
-db.link.belongsTo(db.season)
+// One to Many ( Season - Quality )
+db.season.hasMany(db.quality)
+db.quality.belongsTo(db.season)
 
-// One to One ( Season - Quality )
-db.quality.hasMany(db.season, {foreignKey: 'quality_id'})
-db.season.belongsTo(db.quality)
+// One to Many ( Season - Link )
+db.quality.hasMany(db.link)
+db.link.belongsTo(db.quality)
+
+
 
 db.sequelize.sync({ force: false }).then(() => {
     console.log('re-sync done!');

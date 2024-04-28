@@ -4,8 +4,16 @@
     <div class="row">
         <div class="col-9">
             <div class="w-50 my-3">
+                <button class="btn btn-primary btn-lg" onclick="getWorkData()">ثبت</button>
+            </div>
+
+            <div class="w-50 my-3">
                 <label for="WorkName">نام اثر</label>
                 <input id="WorkName" type="text" class="form-control">
+            </div>
+            <div class="w-50 my-3">
+                <label for="image">لینک تصویر</label>
+                <input id="image" type="text" class="form-control">
             </div>
 
             <div class="w-25">
@@ -82,13 +90,13 @@
                     <option value="<%= item.name %>"><%= item.name %></option>
                 <% } %>
             </select>
-            <button class="btn btn-info mx-3" @click="qualities.push({id: document.getElementById('qualitySelector').value}); qualitiesStatus.push(false); console.log(qualitiesStatus);"> افزودن کیفیت </button>
+            <button class="btn btn-info mx-3" @click="qualities.push({id: document.getElementById('qualitySelector').value}); qualitiesStatus.push(false); console.log(qualities)"> افزودن کیفیت </button>
             <button class="btn btn-warning mx-3" @click="if (qualities.length > 0) qualities.pop()"> حذف کیفیت </button>
         </div>
 
         <div class="my-2">
             <template x-for="(i, index) in qualities">
-                <button @click="qualitiesStatus.fill(false, 0, qualitiesStatus.length); qualitiesStatus[index] = true; console.log(qualitiesStatus)" class="btn btn-secondary ms-3" type="button" x-text="' کیفیت ' + (i.id)">  </button>
+                <button :quality="i.id" @click="qualitiesStatus.fill(false, 0, qualitiesStatus.length); qualitiesStatus[index] = true" class="btn btn-secondary ms-3 quality" type="button" x-text="' کیفیت ' + (i.id)">  </button>
             </template>
         </div>
 
@@ -99,7 +107,7 @@
 
                 <div class="d-flex my-3" style="max-width: 400px; overflow-x: auto">
                     <template x-for="i in tabsCount" x-transition>
-                        <button @click="tabsStatus.fill(false, 0, tabsStatus.length); tabsStatus[i] = true" class="btn btn-secondary ms-3" type="button" x-text="'فصل' + (i)">  </button>
+                        <button :quality="k.id" :season="i" @click="tabsStatus.fill(false, 0, tabsStatus.length); tabsStatus[i] = true" class="btn btn-secondary ms-3 season" type="button" x-text="'فصل' + (i)">  </button>
                     </template>
                 </div>
                 <template x-for="i in tabsCount">
@@ -108,7 +116,7 @@
                         <button class="btn btn-danger" @click="if (episodes > 0)  episodes--;"> حذف قسمت </button>
                         <template x-for="j in episodes">
                             <div class="w-50 my-3">
-                                <input :class="'form-control ' + 'season-' + i + ' quality-' + k.id" type="text" :placeholder="' قسمت ' + j">
+                                <input :quality="k.id" :season="i" :class="'form-control link ' + 'season-' + i + ' quality-' + k.id" type="text" :placeholder="' قسمت ' + j">
                             </div>
                         </template>
                     </div>
@@ -122,3 +130,14 @@
 
 
 </div>
+
+<script>
+    const getWorkData = () => {
+        const qualities = [...document.querySelectorAll('.quality')].map( (x) => x.getAttribute('quality'))
+        const seasons = [...document.querySelectorAll('.season')].filter( (x) => x.getAttribute('quality') === qualities[0]).map((x) => 'Season ' + x.getAttribute('season'))
+
+        for (let i = 0 ; i < qualities.length; i++) {
+
+        }
+    }
+</script>
