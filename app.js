@@ -7,6 +7,7 @@ const { sequelize } = require("./postgres/postgres");
 const qualityRoutes = require('./router/qualityRouter')
 const workRoutes = require('./router/workRouter')
 const linkRoutes = require('./router/linkRouter')
+const tagRoutes = require('./router/tagRouter')
 const adminRoutes = require('./router/adminRouter')
 
 const app = express();
@@ -15,6 +16,8 @@ app.use(
     cors({
         origin: [
             'http://localhost:3000',
+            'http://localhost:5173',
+            'https://dlrozaneh.liara.run'
         ],
         credentials: true,
     })
@@ -34,6 +37,7 @@ const port = process.env.PORT || 3000;
 
 app.use('/api/link', linkRoutes)
 app.use('/api/work', workRoutes)
+app.use('/api/tag', tagRoutes)
 app.use('/api/quality', qualityRoutes)
 app.use('/admin', adminRoutes)
 

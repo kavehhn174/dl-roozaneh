@@ -36,6 +36,24 @@ router.get('/quality-list', async function (req, res) {
     }
 });
 
+router.get('/genre-list', async function (req, res) {
+    const genres = await db.genre.findAll({})
+    try {
+        res.render('admin/admin-default', {template: 'genre-list', genres});
+    }  catch (err) {
+        console.log(err);
+    }
+});
+
+router.get('/tag-list', async function (req, res) {
+    const tags = await db.tag.findAll({})
+    try {
+        res.render('admin/admin-default', {template: 'tag-list', tags});
+    }  catch (err) {
+        console.log(err);
+    }
+});
+
 router.get('/edit-work', async function (req, res) {
     try {
         res.render('pages/admin/add-work', {});
@@ -130,7 +148,6 @@ router.get('/seed-v3', async function (req,res,next) {
     try {
 
         for (let i = 0; i < mockWorks.length; i++) {
-            console.log(`i: ${i}`)
             const work = await db.work.create({
                 name: mockWorks[i].name,
                 workType: mockWorks[i].workType,
@@ -164,7 +181,6 @@ router.get('/seed-v3', async function (req,res,next) {
                         });
                     }
                 }
-                console.log('After ', j)
             }
         }
 
