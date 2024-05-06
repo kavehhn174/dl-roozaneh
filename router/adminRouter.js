@@ -88,64 +88,73 @@ router.get('/works', async (req, res) => {
     }
 });
 
+const tags = ['اکشن', 'رزمی', 'ترسناک', 'علمی تخیلی', 'کمدی', 'هیجان انگیز', 'ماجراجویی', 'معمایی', 'جنایی', 'درام',
+    'خانوادگی', 'فانتزی', 'درام', 'فیلم ایرانی', 'انیمیشن', 'فیلم دوبله', 'فیلم کره ای', 'فیلم هندی', 'سریال خارجی']
 // Mock data
 const mockWorks = [
     {
-        name: 'The Shawshank Redemption',
-        workType: 'Movie',
-        actors: 'Tim Robbins, Morgan Freeman',
-        director: 'Frank Darabont',
+        name: 'دانلود سریال شوگان دوبله فارسی Shogun 2024',
+        workType: 'Series',
+        actors: 'Hiroyuki Sanada , Cosmo Jarvis , Anna Sawai',
+        director: '.',
         hasDub: true,
         hasSub: true,
-        score: 9.0,
-        hasSoftSub: false,
-        duration: '142 min',
-        year: 1994,
+        score: 9.4,
+        hasSoftSub: true,
+        duration: '60 دقیقه',
+        year: 2024,
         seasonsCount: 1,
-        episodePerSeason: 1,
-        image: 'a'
+        episodePerSeason: 10,
+        image: 'https://dlrozaneh.ir/wp-content/uploads/2024/02/Shogun.jpg',
+        shortDescription: 'هنگامی که یک کشتی مرموز اروپایی در یک دهکده ماهیگیری در همان نزدیکی فرو رفته است، لرد یوشی توراناگا رازهایی را کشف می کند که می تواند مقیاس قدرت را بر هم بزند و دشمنانش را ویران کند.'
 
     },
     {
-        name: 'Game of Thrones',
-        workType: 'Series',
-        actors: 'Emilia Clarke, Kit Harington, Sophie Turner',
-        director: 'David Benioff, D.B. Weiss',
+        name: 'دانلود فیلم مرد میمونی دوبله فارسی Monkey Man 2024',
+        workType: 'Movie',
+        actors: 'Dev Patel , Sharlto Copley , Pitobash',
+        director: 'Dev Patel',
         hasDub: true,
         hasSub: true,
-        hasSoftSub: false,
-        seasonsCount: 5,
-        score: 9.0,
-        episodes: 73,
+        hasSoftSub: true,
+        seasonsCount: 1,
+        score: 7.6,
         duration: '60 min',
         year: 2011,
-        episodePerSeason: 10,
-        image: 'b'
+        episodePerSeason: 1,
+        image: 'https://dlrozaneh.ir/wp-content/uploads/2024/03/Monkey-Man.jpg',
+        shortDescription: 'یک مرد جوان ناشناس کمپین انتقامی را علیه رهبران فاسدی که مادرش را به قتل رساندند به راه می اندازد و همچنان به قربانی کردن افراد فقیر و ناتوان ادامه می دهد.'
     },
     {
-        name: 'Friends',
-        workType: 'Series',
-        actors: 'Jennifer Aniston, Courteney Cox, Lisa Kudrow, Matt LeBlanc, Matthew Perry, David Schwimmer',
-        director: 'David Crane, Marta Kauffman',
+        name: 'دانلود فیلم Rebel Moon: Part Two – The Scargiver 2024',
+        workType: 'Movie',
+        actors: 'Sofia Boutella , Ed Skrein , Jena Malone',
+        director: 'Zack Snyder',
         hasDub: true,
         hasSub: true,
-        hasSoftSub: false,
-        seasonsCount: 3,
-        score: 9.0,
-        episodes: 236,
-        duration: '22 min',
-        year: 1994,
-        episodePerSeason: 23,
-        image: 'c'
+        hasSoftSub: true,
+        seasonsCount: 1,
+        score: 6.2,
+        episodes: 1,
+        duration: 'یک ساعت و 55 دقیقه',
+        year: 2024,
+        episodePerSeason: 1,
+        image: 'https://dlrozaneh.ir/wp-content/uploads/2024/04/Rebel-Moon.jpg',
+        shortDescription: 'کورا و جنگجویان بازمانده برای دفاع از Veldt، خانه جدید خود، در کنار مردم آن در برابر قلمرو آماده می شوند.'
     },
 ];
 
-const mockQualities = ['720p', '1080p', '4K'];
+const mockQualities = ['480p', '720p', '1080p', '1080 HQ'];
 
 router.get('/seed-v3', async function (req,res,next) {
     await db.sequelize.sync({ force: true });
     console.log('Cleared DB')
     try {
+        for (let i =0 ; i < tags.length; i++) {
+            const tag = await db.tag.create({
+                name: tags[i]
+            });
+        }
 
         for (let i = 0; i < mockWorks.length; i++) {
             const work = await db.work.create({
@@ -158,7 +167,8 @@ router.get('/seed-v3', async function (req,res,next) {
                 hasSoftSub: mockWorks[i].hasSoftSub,
                 duration: mockWorks[i].duration,
                 year: mockWorks[i].year,
-                image: mockWorks[i].image
+                image: mockWorks[i].image,
+                shortDescription: mockWorks[i].shortDescription
             });
             for (let j = 0; j < mockWorks[i].seasonsCount; j++) {
                 const season = await db.season.create({

@@ -3,7 +3,7 @@ const db = {};
 
 let sequelize;
 
-sequelize = new Sequelize('postgresql://root:kdoJN4hmkwpUl1xPTOinPOcc@kamet.liara.cloud:33448/postgres', {
+sequelize = new Sequelize(process.env.DB_URL, {
     logging: false,});
 
 db.sequelize = sequelize;

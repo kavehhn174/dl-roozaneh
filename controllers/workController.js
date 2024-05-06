@@ -14,7 +14,6 @@ exports.createWork = catchAsync(async (req, res, next) => {
 });
 
 exports.getAllWorks = catchAsync(async (req, res, next) => {
-    console.log('Get All Works')
     const works = await db.work.findAll({
         include: [
             {
